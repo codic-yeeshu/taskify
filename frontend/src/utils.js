@@ -4,5 +4,4 @@ export const notify = (message, type) => {
   toast[type](message);
 };
 
-// export const API_URL = process.env.REACT_APP_BACKEND_URL;
-export const API_URL = "https://taskify-api.vercel.app";
+export const API_URL = process.env.REACT_APP_BACKEND_URL;
