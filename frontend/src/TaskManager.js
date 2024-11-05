@@ -148,7 +148,7 @@ function TaskManager() {
       className="d-flex flex-column align-items-center
         w-50 m-auto mt-5"
     >
-      <h1 className="mb-4">Task Manager App</h1>
+      <h1 className="mb-4">Taskify App</h1>
       {/* Input and Search box */}
       <div
         className="d-flex justify-content-between
