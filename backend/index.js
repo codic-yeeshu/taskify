@@ -34,7 +34,7 @@ app.post("/login", async (req, res) => {
   const { email, password } = req.body; // Include name and email
   try {
     // You can choose to allow login by either name or email
-    const user = await User.findOne({ $or: [{ email }] }); // Find user by name or email
+    const user = await User.findOne({ email });
     if (!user) return res.status(401).json({ error: "Invalid credentials" });
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(401).json({ error: "Invalid credentials" });

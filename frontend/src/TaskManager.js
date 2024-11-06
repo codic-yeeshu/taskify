@@ -11,17 +11,19 @@ import { ToastContainer } from "react-toastify";
 import { CreateTask, DeleteTaskById, GetAllTasks, UpdateTaskById } from "./api";
 import { notify } from "./utils";
 import { Context } from "./context/context";
+
 function TaskManager() {
   const { logout } = useContext(Context);
   const [input, setInput] = useState("");
   const [tasks, setTasks] = useState([]);
   const [copyTasks, setCopyTasks] = useState([]);
   const [updateTask, setUpdateTask] = useState(null);
+  const [draggedIndex, setDraggedIndex] = useState();
 
   const handleTask = () => {
     if (updateTask && input) {
       //upadte api call
-      console.log("update api call");
+      // console.log("update api call");
       const obj = {
         taskName: input,
         isDone: updateTask.isDone,
@@ -29,7 +31,7 @@ function TaskManager() {
       };
       handleUpdateItem(obj);
     } else if (updateTask === null && input) {
-      console.log("create api call");
+      // console.log("create api call");
       //create api call
       handleAddTask();
     }
@@ -146,6 +148,25 @@ function TaskManager() {
     );
     setTasks(results);
   };
+
+  const handleDragStart = (index) => {
+    setDraggedIndex(index);
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+  };
+
+  const handleDrop = (index) => {
+    const newTodos = [...tasks];
+    const [removedItem] = newTodos.splice(draggedIndex, 1);
+
+    // Insert the dragged item at the new position
+    newTodos.splice(index, 0, removedItem);
+
+    // Update the state with the new array
+    setTasks(newTodos);
+  };
   return (
     <div
       className="d-flex flex-column align-items-center
@@ -193,8 +214,12 @@ function TaskManager() {
       {/* List of items */}
       <div className="d-flex flex-column w-100">
         {tasks.length > 0 ? (
-          tasks.map((item) => (
+          tasks.map((item, index) => (
             <div
+              draggable
+              onDragStart={() => handleDragStart(index)}
+              onDragOver={handleDragOver}
+              onDrop={() => handleDrop(index)}
               key={item._id}
               className="m-2 p-2 border bg-light
                 w-100 rounded-3 d-flex justify-content-between
