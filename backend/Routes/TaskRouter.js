@@ -1,17 +1,17 @@
-const { createTask, fetchAllTasks, updateTaskById, deleteTaskById } = require('../Controllers/TaskController');
+const express = require("express");
+const {
+  createTask,
+  fetchAllTasks,
+  updateTaskById,
+  deleteTaskById,
+} = require("../Controllers/TaskController");
+const authenticate = require("../middleware/authenticate");
 
-const router = require('express').Router();
+const router = express.Router();
 
-// To get all the tasks
-router.get('/', fetchAllTasks);
-
-// To create a task
-router.post('/', createTask);
-
-// To update a task
-router.put('/:id', updateTaskById);
-
-// To delete a task
-router.delete('/:id', deleteTaskById);
+router.post("/", authenticate, createTask);
+router.get("/", authenticate, fetchAllTasks);
+router.put("/:id", authenticate, updateTaskById);
+router.delete("/:id", authenticate, deleteTaskById);
 
 module.exports = router;

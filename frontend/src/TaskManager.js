@@ -1,15 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   FaCheck,
   FaPencilAlt,
   FaPlus,
   FaSearch,
+  FaSignOutAlt,
   FaTrash,
 } from "react-icons/fa";
 import { ToastContainer } from "react-toastify";
 import { CreateTask, DeleteTaskById, GetAllTasks, UpdateTaskById } from "./api";
 import { notify } from "./utils";
+import { Context } from "./context/context";
 function TaskManager() {
+  const { logout } = useContext(Context);
   const [input, setInput] = useState("");
   const [tasks, setTasks] = useState([]);
   const [copyTasks, setCopyTasks] = useState([]);
@@ -149,6 +152,13 @@ function TaskManager() {
         w-50 m-auto mt-5"
     >
       <h1 className="mb-4">Taskify App</h1>
+
+      <button
+        className="btn btn-danger position-absolute top-0 end-0 m-3"
+        onClick={logout} // Trigger logout on click
+      >
+        <FaSignOutAlt /> Logout
+      </button>
       {/* Input and Search box */}
       <div
         className="d-flex justify-content-between
