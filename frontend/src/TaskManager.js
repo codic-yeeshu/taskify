@@ -47,7 +47,7 @@ function TaskManager() {
 
   useEffect(() => {
     fetchAllTasks();
-    moveIncompleteTaskToBottom();
+    moveCompletedTaskToBottom();
   }, []);
 
   const handleAddTask = async () => {
@@ -83,11 +83,11 @@ function TaskManager() {
     }
   };
 
-  const moveIncompleteTaskToBottom = () => {
+  const moveCompletedTaskToBottom = () => {
     const complete = tasks.filter((item) => item.isDone);
     const incomplete = tasks.filter((item) => !item.isDone);
 
-    setTasks([...incomplete, complete]);
+    setTasks([...incomplete, ...complete]);
   };
 
   const handleDeleteTask = async (id) => {
@@ -138,7 +138,7 @@ function TaskManager() {
       if (success) {
         //show success toast
         notify(message, "success");
-        moveIncompleteTaskToBottom();
+        moveCompletedTaskToBottom();
       } else {
         //show error toast
         notify(message, "error");

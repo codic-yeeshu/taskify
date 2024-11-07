@@ -1,6 +1,8 @@
 import React, { useContext, useState } from "react";
 import styles from "./signUp.module.css";
 import { Context } from "../../context/context";
+import { notify } from "../../utils";
+import { ToastContainer } from "react-toastify";
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const SignUpPage = () => {
@@ -17,6 +19,7 @@ const SignUpPage = () => {
     e.preventDefault();
     setLoading(true);
     try {
+      notify("Creating your Account", "warning");
       const response = await fetch(`${BACKEND_URL}/signup`, {
         method: "POST",
         headers: {
@@ -27,6 +30,7 @@ const SignUpPage = () => {
 
       if (response.ok) {
         // If the signup is successful, switch to the SignIn page or perform any action
+        notify("Account created Successfully", "success");
         setNewUser(false);
       } else {
         const errorData = await response.json();
@@ -106,6 +110,11 @@ const SignUpPage = () => {
           </div>
         </form>
       </div>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+      />
     </>
   );
 };

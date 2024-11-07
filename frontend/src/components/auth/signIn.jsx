@@ -1,6 +1,8 @@
 import React, { useContext, useState } from "react";
 import styles from "./signIn.module.css";
 import { Context } from "../../context/context";
+import { ToastContainer } from "react-toastify";
+import { notify } from "../../utils";
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const SignInPage = () => {
@@ -12,6 +14,7 @@ const SignInPage = () => {
     e.preventDefault();
     setLoading(true);
     try {
+      notify("Signing you In", "warning");
       const response = await fetch(`${BACKEND_URL}/login`, {
         method: "POST",
         headers: {
@@ -21,6 +24,7 @@ const SignInPage = () => {
       });
 
       if (response.ok) {
+        notify("You're In", "success");
         const data = await response.json();
         const { token } = data;
 
@@ -31,11 +35,13 @@ const SignInPage = () => {
         setLoggedIn(true);
       } else {
         const errorData = await response.json();
+        notify(errorData.error, "error");
         setErrorMessage(errorData.error || "Failed to log in.");
       }
     } catch (error) {
       console.error("Error during login:", error);
       setErrorMessage("An error occurred. Please try again later.");
+      notify(error, "error");
     }
     setLoading(false);
   };
@@ -90,6 +96,11 @@ const SignInPage = () => {
           </div>
         </form>
       </div>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+      />
     </>
   );
 };
