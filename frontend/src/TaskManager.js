@@ -23,6 +23,7 @@ function TaskManager() {
         isDone: updateTask.isDone,
         _id: updateTask._id,
       };
+      setUpdateTask(null);
       handleUpdateItem(obj);
     } else if (updateTask === null && input) {
       // console.log("create api call");
