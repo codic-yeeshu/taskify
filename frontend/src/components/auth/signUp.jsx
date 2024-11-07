@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import styles from "./signUp.module.css";
-import { Context } from "../context/context";
+import { Context } from "../../context/context";
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const SignUpPage = () => {
@@ -97,12 +97,12 @@ const SignUpPage = () => {
            
           <div className={styles.signInNote}>
             Already have an Account?
-            <a
+            <p
               onClick={() => setNewUser((prev) => !prev)}
               className={styles.anchor}
             >
               SignIn here
-            </a>
+            </p>
           </div>
         </form>
       </div>

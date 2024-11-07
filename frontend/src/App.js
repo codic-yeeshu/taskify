@@ -1,8 +1,8 @@
 import { useContext } from "react";
 import "./App.css";
 import TaskManager from "./TaskManager";
-import SignInPage from "./auth/signIn";
-import SignUpPage from "./auth/signUp";
+import SignInPage from "./components/auth/signIn";
+import SignUpPage from "./components/auth/signUp";
 import ContextProvider, { Context } from "./context/context";
 
 function App() {

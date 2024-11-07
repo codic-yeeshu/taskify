@@ -5,6 +5,7 @@ import { CreateTask, DeleteTaskById, GetAllTasks, UpdateTaskById } from "./api";
 import { notify } from "./utils";
 import { Context } from "./context/context";
 import Task from "./components/task";
+import ProgressBar from "./components/progressBar";
 
 function TaskManager() {
   const { logout } = useContext(Context);
@@ -13,6 +14,7 @@ function TaskManager() {
   const [copyTasks, setCopyTasks] = useState([]);
   const [updateTask, setUpdateTask] = useState(null);
   const [draggedIndex, setDraggedIndex] = useState();
+  const [completePercentage, setCompletePercentage] = useState(0);
 
   const handleTask = () => {
     if (updateTask && input) {
@@ -38,6 +40,15 @@ function TaskManager() {
       setInput(updateTask.taskName);
     }
   }, [updateTask]);
+
+  useEffect(() => {
+    calCompletePercentage();
+  }, [tasks]);
+
+  useEffect(() => {
+    fetchAllTasks();
+    moveIncompleteTaskToBottom();
+  }, []);
 
   const handleAddTask = async () => {
     const obj = {
@@ -71,9 +82,13 @@ function TaskManager() {
       notify("Failed to create task", "error");
     }
   };
-  useEffect(() => {
-    fetchAllTasks();
-  }, []);
+
+  const moveIncompleteTaskToBottom = () => {
+    const complete = tasks.filter((item) => item.isDone);
+    const incomplete = tasks.filter((item) => !item.isDone);
+
+    setTasks([...incomplete, complete]);
+  };
 
   const handleDeleteTask = async (id) => {
     try {
@@ -93,6 +108,21 @@ function TaskManager() {
     }
   };
 
+  const calCompletePercentage = () => {
+    const totalTodo = tasks.length;
+    if (totalTodo === 0) {
+      setCompletePercentage(0);
+      return;
+    }
+
+    const completedTodo = tasks.reduce(
+      (acc, item) => (item.isDone ? acc + 1 : acc),
+      0
+    );
+    const percentage = Math.floor((completedTodo / totalTodo) * 100);
+    setCompletePercentage(percentage);
+  };
+
   const handleCheckAndUncheck = async (item) => {
     const { _id, isDone, taskName } = item;
     const obj = {
@@ -100,10 +130,15 @@ function TaskManager() {
       isDone: !isDone,
     };
     try {
+      notify(
+        isDone ? "Marking as incomplete" : "Marking as complete",
+        "warning"
+      );
       const { success, message } = await UpdateTaskById(_id, obj);
       if (success) {
         //show success toast
         notify(message, "success");
+        moveIncompleteTaskToBottom();
       } else {
         //show error toast
         notify(message, "error");
@@ -165,6 +200,7 @@ function TaskManager() {
     // Update the state with the new array
     setTasks(newTodos);
   };
+
   return (
     <div
       className="d-flex flex-column align-items-center
@@ -208,6 +244,10 @@ function TaskManager() {
           />
         </div>
       </div>
+
+      {tasks.length > 0 ? (
+        <ProgressBar percentage={completePercentage} />
+      ) : null}
 
       {/* List of items */}
       <div className="d-flex flex-column w-100">
