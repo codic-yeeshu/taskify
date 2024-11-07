@@ -4,12 +4,13 @@ import { Context } from "../context/context";
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const SignInPage = () => {
-  const { setNewUser, setLoggedIn } = useContext(Context);
+  const { setNewUser, setLoggedIn, loading, setLoading } = useContext(Context);
   const [signInData, setSignInData] = useState({ email: "", password: "" });
   const [errorMessage, setErrorMessage] = useState("");
 
   const handleSignIn = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const response = await fetch(`${BACKEND_URL}/login`, {
         method: "POST",
@@ -36,6 +37,7 @@ const SignInPage = () => {
       console.error("Error during login:", error);
       setErrorMessage("An error occurred. Please try again later.");
     }
+    setLoading(false);
   };
 
   return (
@@ -72,8 +74,8 @@ const SignInPage = () => {
             />
           </div>
           <div className={styles.btndiv}>
-            <button type="submit" className={styles.button}>
-              SignIn
+            <button type="submit" className={styles.button} disabled={loading}>
+              {loading ? "..." : "SignIn"}
             </button>
           </div>
            

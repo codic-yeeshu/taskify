@@ -4,7 +4,7 @@ import { Context } from "../context/context";
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const SignUpPage = () => {
-  const { setNewUser } = useContext(Context);
+  const { setNewUser, loading, setLoading } = useContext(Context);
   const [signUpData, setSignUpData] = useState({
     name: "",
     email: "",
@@ -15,6 +15,7 @@ const SignUpPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const response = await fetch(`${BACKEND_URL}/signup`, {
         method: "POST",
@@ -35,6 +36,7 @@ const SignUpPage = () => {
       console.error("Error during signup:", error);
       setErrorMessage("An error occurred. Please try again later.");
     }
+    setLoading(false);
   };
 
   return (
@@ -88,8 +90,8 @@ const SignUpPage = () => {
             />
           </div>
           <div className={styles.btndiv}>
-            <button type="submit" className={styles.button}>
-              Signup
+            <button type="submit" className={styles.button} disabled={loading}>
+              {loading ? "..." : "Signup"}
             </button>
           </div>
            

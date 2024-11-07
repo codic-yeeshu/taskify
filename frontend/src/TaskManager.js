@@ -1,16 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
-import {
-  FaCheck,
-  FaPencilAlt,
-  FaPlus,
-  FaSearch,
-  FaSignOutAlt,
-  FaTrash,
-} from "react-icons/fa";
+import { FaPlus, FaSearch, FaSignOutAlt } from "react-icons/fa";
 import { ToastContainer } from "react-toastify";
 import { CreateTask, DeleteTaskById, GetAllTasks, UpdateTaskById } from "./api";
 import { notify } from "./utils";
 import { Context } from "./context/context";
+import Task from "./components/task";
 
 function TaskManager() {
   const { logout } = useContext(Context);
@@ -50,6 +44,7 @@ function TaskManager() {
       isDone: false,
     };
     try {
+      notify("adding task", "warning");
       const { success, message } = await CreateTask(obj);
       if (success) {
         //show success toast
@@ -81,6 +76,7 @@ function TaskManager() {
 
   const handleDeleteTask = async (id) => {
     try {
+      notify("deleting the task", "warning");
       const { success, message } = await DeleteTaskById(id);
       if (success) {
         //show success toast
@@ -125,6 +121,7 @@ function TaskManager() {
       isDone: isDone,
     };
     try {
+      notify("updating task", "warning");
       const { success, message } = await UpdateTaskById(_id, obj);
       if (success) {
         //show success toast
@@ -215,49 +212,16 @@ function TaskManager() {
       <div className="d-flex flex-column w-100">
         {tasks.length > 0 ? (
           tasks.map((item, index) => (
-            <div
-              draggable
-              onDragStart={() => handleDragStart(index)}
-              onDragOver={handleDragOver}
-              onDrop={() => handleDrop(index)}
-              key={item._id}
-              className="m-2 p-2 border bg-light
-                w-100 rounded-3 d-flex justify-content-between
-                align-items-center"
-            >
-              <span
-                className={item.isDone ? "text-decoration-line-through" : ""}
-              >
-                {item.taskName}
-              </span>
-
-              <div className="">
-                <button
-                  onClick={() => handleCheckAndUncheck(item)}
-                  className="btn btn-success
-                            btn-sm me-2"
-                  type="button"
-                >
-                  <FaCheck />
-                </button>
-                <button
-                  onClick={() => setUpdateTask(item)}
-                  className="btn btn-primary
-                            btn-sm me-2"
-                  type="button"
-                >
-                  <FaPencilAlt />
-                </button>
-                <button
-                  onClick={() => handleDeleteTask(item._id)}
-                  className="btn btn-danger
-                            btn-sm me-2"
-                  type="button"
-                >
-                  <FaTrash />
-                </button>
-              </div>
-            </div>
+            <Task
+              item={item}
+              index={index}
+              handleCheckAndUncheck={handleCheckAndUncheck}
+              setUpdateTask={setUpdateTask}
+              handleDeleteTask={handleDeleteTask}
+              handleDragOver={handleDragOver}
+              handleDragStart={handleDragStart}
+              handleDrop={handleDrop}
+            />
           ))
         ) : (
           <p>No tasks to show...</p>
