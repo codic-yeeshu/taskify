@@ -48,6 +48,19 @@ app.post("/login", async (req, res) => {
   }
 });
 
+app.post("/verify-token", (req, res) => {
+  const token = req.body.token;
+  if (!token) return res.status(401).json({ error: "No token provided" });
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    res.status(200).json({ valid: true, userId: decoded.id });
+  } catch (error) {
+    console.error("Invalid token:", error);
+    res.status(401).json({ valid: false });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Server is running on PORT=${PORT}`);
 });
